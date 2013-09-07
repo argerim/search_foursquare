@@ -20,11 +20,11 @@
       L.marker(['<%=venue.location.lat%>', '<%=venue.location.lng%>']).bindPopup('<%=venue.name%>').addTo(places);      
     <% end %>
   <% end %>
-    L.Icon.Default.imagePath = 'http://search-foursquare.herokuapp.com/'+'assets/images';
-    var cmAttr = 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2011 CloudMade',
-    cmUrl = 'http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/{styleId}/256/{z}/{x}/{y}.png';
+  L.Icon.Default.imagePath = 'http://search-foursquare.herokuapp.com/'+'assets/images';
+  var cmAttr = 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2011 CloudMade',
+      cmUrl = 'http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/{styleId}/256/{z}/{x}/{y}.png';
 
-    var minimal   = L.tileLayer(cmUrl, {styleId: 22677, attribution: cmAttr}),
+  var minimal   = L.tileLayer(cmUrl, {styleId: 22677, attribution: cmAttr}),
       midnight  = L.tileLayer(cmUrl, {styleId: 999,   attribution: cmAttr}),
       motorways = L.tileLayer(cmUrl, {styleId: 46561, attribution: cmAttr});    
  
@@ -32,7 +32,9 @@
     zoom: 15,
     layers: [minimal, motorways, places]
   });
+
   map.locate({setView: true, maxZoom: 15});
+
   var baseLayers = {
     "Minimal": minimal,
     "Night View": midnight
@@ -42,21 +44,22 @@
     "Motorways": motorways,
     "Places": places
   };
+
   map.on('locationfound', onLocationFound);
 
   L.control.layers(baseLayers, overlays).addTo(map);
 
   function onLocationFound(e) {
-  var radius = e.accuracy / 2;
-  var latlng = (/\((.*?)\)/g).exec(e.latlng)[1].split(',');
-  L.marker(e.latlng).addTo(map)
-      .bindPopup("You").openPopup();
+    var radius = e.accuracy / 2;
+    var latlng = (/\((.*?)\)/g).exec(e.latlng)[1].split(',');
+    L.marker(e.latlng).addTo(map)
+        .bindPopup("You").openPopup();
 
-  L.circle(e.latlng, radius, {color: 'red',
-      fillColor: '#f03',
-      fillOpacity: 0.5}
-  ).addTo(map);
-  $("#latitude").val(latlng[0]);
-  $("#longitude").val(latlng[1]);
-}
+    L.circle(e.latlng, radius, {color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.5}
+    ).addTo(map);
+    $("#latitude").val(latlng[0]);
+    $("#longitude").val(latlng[1]);
+  }
 </script>
