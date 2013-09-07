@@ -19,7 +19,8 @@
     <% @venues.groups.first.items.each_with_index do |venue, id| %>
       L.marker(['<%=venue.location.lat%>', '<%=venue.location.lng%>']).bindPopup('<%=venue.name%>').addTo(places);      
     <% end %>
-  <% end %>    
+  <% end %>
+    L.Icon.Default.imagePath = 'http://search-foursquare.herokuapp.com/'+'assets/images';
     var cmAttr = 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2011 CloudMade',
     cmUrl = 'http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/{styleId}/256/{z}/{x}/{y}.png';
 
