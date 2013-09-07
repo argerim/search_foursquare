@@ -1,0 +1,61 @@
+<div tabindex="0" class="leaflet-container leaflet-fade-anim" id="map" style="width: auto; height: 400px; position: relative;"></div>
+
+<%= form_tag(dashboard_index_path, :method => 'get', :class => 'form-horizontal') do %> 
+  <%= content_tag :legend, "Search" %>
+  <div class="controls form-inline">
+    <%= label_tag :latitude %>
+    <%= text_field_tag :latitude %>
+    <%= label_tag :longitude %>
+    <%= text_field_tag :longitude %>
+    <%= label_tag :text %>
+    <%= search_field_tag :text, "pizza" %>
+    <%= submit_tag 'Find', :class => 'btn' %>
+  </div>
+<% end %>
+
+<script>
+  var places = new L.LayerGroup();
+  <% if @venues.present? %>
+    <% @venues.groups.first.items.each_with_index do |venue, id| %>
+      L.marker(['<%=venue.location.lat%>', '<%=venue.location.lng%>']).bindPopup('<%=venue.name%>').addTo(places);      
+    <% end %>
+  <% end %>    
+    var cmAttr = 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2011 CloudMade',
+    cmUrl = 'http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/{styleId}/256/{z}/{x}/{y}.png';
+
+    var minimal   = L.tileLayer(cmUrl, {styleId: 22677, attribution: cmAttr}),
+      midnight  = L.tileLayer(cmUrl, {styleId: 999,   attribution: cmAttr}),
+      motorways = L.tileLayer(cmUrl, {styleId: 46561, attribution: cmAttr});    
+ 
+  var map = L.map('map', {      
+    zoom: 15,
+    layers: [minimal, motorways, places]
+  });
+  map.locate({setView: true, maxZoom: 15});
+  var baseLayers = {
+    "Minimal": minimal,
+    "Night View": midnight
+  };
+
+  var overlays = {
+    "Motorways": motorways,
+    "Places": places
+  };
+  map.on('locationfound', onLocationFound);
+
+  L.control.layers(baseLayers, overlays).addTo(map);
+
+  function onLocationFound(e) {
+  var radius = e.accuracy / 2;
+  var latlng = (/\((.*?)\)/g).exec(e.latlng)[1].split(',');
+  L.marker(e.latlng).addTo(map)
+      .bindPopup("You").openPopup();
+
+  L.circle(e.latlng, radius, {color: 'red',
+      fillColor: '#f03',
+      fillOpacity: 0.5}
+  ).addTo(map);
+  $("#latitude").val(latlng[0]);
+  $("#longitude").val(latlng[1]);
+}
+</script>
